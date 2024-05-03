@@ -2,6 +2,7 @@ package com.meikural.codeeditor.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.UuidGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,27 +10,29 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "ourusers", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
-public class OurUsers implements UserDetails {
+@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "UUID", strategy = GenerationType.UUID)
+    @UuidGenerator
+    private UUID id;
 
     @Column(unique = true)
     private String email;
-
-    private String password;
-    private String role;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     private Date createdAt;
 
-    private String niceName;
+    private String password;
+    private String role;
+    private String username;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -43,21 +46,21 @@ public class OurUsers implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
